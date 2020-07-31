@@ -1,8 +1,5 @@
 import makeupGallery from './makeup-gallery';
-import getImage from './fetch';
-
-let query = '';
-let page = 1;
+import imgService from './imgService';
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -11,21 +8,22 @@ const refs = {
   titleQuery: document.querySelector('.title-query'),
 };
 
-// console.dir(refs.search);
 refs.form.addEventListener('submit', handleSubmit);
 refs.nextPage.addEventListener('click', getNextPage);
 
 function handleSubmit(event) {
   // Предотвращаем поведение по умолчанию
   event.preventDefault();
-  query = refs.input.value;
-  refs.titleQuery.textContent = query;
   document.querySelector('.gallery').innerHTML = '';
-  getImage(query).then(makeupGallery);
+  refs.nextPage.classList.remove('is-hidden');
+  const textQuery = refs.input.value;
+  refs.titleQuery.textContent = textQuery;
+  imgService.query = textQuery;
+  imgService.resetPage();
+  imgService.getImages().then(makeupGallery);
   refs.form.reset();
 }
 
 function getNextPage() {
-  page++;
-  getImage(query, page).then(makeupGallery);
+  imgService.getImages().then(makeupGallery);
 }
